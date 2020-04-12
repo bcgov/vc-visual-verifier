@@ -141,5 +141,8 @@ OIDC_RP_ID_TOKEN_INCLUDE_USERINFO = True
 # vc-authn proof-configuration
 VC_AUTHN_PRES_REQ_CONF_ID = os.getenv("VC_AUTHN_PRES_REQ_CONF_ID")
 
-# claims to check in the UI
+# Claims to be checked in the UI
 OIDC_CLAIMS_REQUIRED = os.getenv("VC_AUTHN_PRES_REQ_CONF_ID")
+
+# VC verifier name
+VERIFIER_NAME = os.getenv("VERIFIER_NAME", "VC Visual Verifier")

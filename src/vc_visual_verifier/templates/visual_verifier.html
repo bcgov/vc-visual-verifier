@@ -1,29 +1,100 @@
 <html lang="en">
   <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- Load required Bootstrap and BootstrapVue CSS -->
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="//unpkg.com/bootstrap/dist/css/bootstrap.min.css"
+    />
+    <link
+      type="text/css"
+      rel="stylesheet"
+      href="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.css"
+    />
 
-    <title>Django OIDC Demo</title>
+    <!-- Load polyfills to support older browsers -->
+    <script
+      src="//polyfill.io/v3/polyfill.min.js?features=es2015%2CIntersectionObserver"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Load Vue followed by BootstrapVue -->
+    <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
+
+    <!-- Load the following for BootstrapVueIcons support -->
+    <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
+
+    <title>VC Visual Verifier</title>
   </head>
   <body>
-    <div class="jumbotron">
-      <h1 class="display-4">Django OIDC Demo</h1>
-      {% if user.is_anonymous %}
-      <p class="alert alert-danger" role="alert">You are not authenticated.</p>
-      <hr class="my-4">
-      <p>Please authenticate by providing a Verified Email.</p>
-      {% url 'oidc_auth_request' as login_url %}
-      <a class="btn btn-primary btn-lg"  href="{{ login_url }}?pres_req_conf_id={{ settings.VC_AUTHN_PRES_REQ_CONF_ID }}" role="button">Authenticate</a>
-      {% else %}
-      <p class="alert alert-success" role="alert">Authentication successful!</p>
-      <hr class="my-4">
-      <p>You can close your session.</p>
-      <a class="btn btn-primary btn-lg"  href="{% url 'oidc_end_session' %}" role="button">Close Session</a>
-      {% endif %}
+    <div id="app">
+      <div>
+        <b-navbar toggleable="lg" type="dark" variant="info">
+          <b-navbar-brand href="#">{{ settings.VERIFIER_NAME }}</b-navbar-brand>
+        </b-navbar>
+      </div>
+
+
+      <b-container fluid="md" class="py-3">
+
+        {% if user.is_anonymous %}
+        
+        <b-card>
+          <b-card-title>Authentication Required</b-card-title>
+          <b-card-text>Please authenticate by providing your credentials.</b-card-text>
+          {% url 'oidc_auth_request' as login_url %}
+              <b-button href="{{ login_url }}?pres_req_conf_id={{ settings.VC_AUTHN_PRES_REQ_CONF_ID }}" variant="primary">Proceed</b-button>
+        </b-card>
+        </div>
+
+        {% else %}
+
+        <b-card-group deck>
+          <b-card
+            header="featured"
+            header-tag="header"
+            footer="Card Footer"
+            footer-tag="footer"
+            title="Title"
+          >
+            <b-card-text>Header and footers using props.</b-card-text>
+            <b-button href="#" variant="primary">Go somewhere</b-button>
+          </b-card>
+      
+          <b-card title="Title" header-tag="header" footer-tag="footer">
+            <template v-slot:header>
+              <h6 class="mb-0">Header Slot</h6>
+            </template>
+            <b-card-text>Header and footers using slots.</b-card-text>
+            <b-button href="#" variant="primary">Go somewhere</b-button>
+            <template v-slot:footer>
+              <em>Footer Slot</em>
+            </template>
+          </b-card>
+        </b-card-group>
+
+        {% endif %}
+      </b-container>
+      
     </div>
+
+    <script type="text/javascript">
+      var app = new Vue({
+        delimiters: ["[[", "]]"],
+        el: "#app",
+        data: {
+          message: "Hello Vue!",
+        },
+        methods: {},
+      });
+    </script>
   </body>
 </html>
