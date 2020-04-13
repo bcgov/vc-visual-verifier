@@ -49,7 +49,7 @@
         
         <b-card>
           <b-card-title>Authentication Required</b-card-title>
-          <b-card-text>Please authenticate by providing your credentials.</b-card-text>
+          <b-card-text>Please authenticate by providing your Verifiable Credentials.</b-card-text>
           {% url 'oidc_auth_request' as login_url %}
               <b-button href="{{ login_url }}?pres_req_conf_id={{ settings.VC_AUTHN_PRES_REQ_CONF_ID }}" variant="primary">Proceed</b-button>
         </b-card>
@@ -75,21 +75,14 @@
                   <b-row class="mx-auto">
                     <b-col cols="4"></b-col>
                     <b-col align-self="center">
-                      <b-icon icon="unlock" variant="success" style="width: 120px; height: 120px;"></b-icon>
+                      <b-icon icon="unlock" variant="success" shift-h="2" style="width: 120px; height: 120px;"></b-icon>
                     </b-col>
                     <b-col cols="4"></b-col>
                   </b-row>
-                  <b-row class="my-2 mx-auto">
+                  <b-row class="my-2 mx-auto text-center">
                     <b-col cols="12" align-self="center">
                       <h3>All, good! You can now proceed.</h3>
                     </b-col>
-                  </b-row>
-                  <b-row class="my-2 mx-auto">
-                    <b-col cols="4"></b-col>
-                    <b-col align-self="center">         
-                      <b-button href="{% url 'oidc_end_session' %}" variant="primary">Close Session</b-button>
-                    </b-col>
-                    <b-col cols="4"></b-col>
                   </b-row>
                 </div>
                 <div v-if="!checkSuccess">
@@ -100,10 +93,19 @@
                     </b-col>
                     <b-col cols="4"></b-col>
                   </b-row>
-                  <b-row class="my-2 mx-auto">
+                  <b-row class="my-2 mx-auto text-center">
                     <b-col cols="12" align-self="center">
                       <h3>Uh-oh, something is wrong.</h3>
                     </b-col>
+                  </b-row>
+                </div>
+                <div v-if="!checking">
+                  <b-row class="my-2 mx-auto">
+                    <b-col cols="4"></b-col>
+                    <b-col align-self="center">         
+                      <b-button href="{% url 'oidc_end_session' %}" variant="primary">Close Session</b-button>
+                    </b-col>
+                    <b-col cols="4"></b-col>
                   </b-row>
                 </div>
               </div>              
