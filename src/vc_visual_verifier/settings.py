@@ -66,6 +66,8 @@ AUTHENTICATION_BACKENDS = (
     "oidc_rp.backends.OIDCAuthBackend",
 )
 
+AUTH_USER_MODEL = 'vc_visual_verifier.User'
+
 ROOT_URLCONF = "vc_visual_verifier.urls"
 
 TEMPLATES = [

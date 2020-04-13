@@ -210,7 +210,7 @@ configureEnvironment() {
     esac
   done
 
-  export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-vc-viual-verifier}"
+  export COMPOSE_PROJECT_NAME="${COMPOSE_PROJECT_NAME:-vc-visual-verifier}"
 
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   
