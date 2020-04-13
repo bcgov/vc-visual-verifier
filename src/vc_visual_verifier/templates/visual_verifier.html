@@ -117,6 +117,22 @@
               <h6 class="mb-0">Verifier View</h6>
             </template>
             <b-card-title>Provided Claims</b-card-title>
+            <div class="sticky-top">
+              <b-row align-h="between" class="mb-4">
+                <b-col cols="4">
+                  <b-button variant="danger" v-on:click="reject()">
+                    <b-icon icon="exclamation-octagon" class="mx-1"></b-icon>
+                    Reject
+                  </b-button>
+                </b-col>
+                <b-col cols="4">
+                  <b-button variant="success" class="float-right" v-on:click="approve()">
+                    <b-icon icon="card-checklist" class="mx-1"></b-icon>
+                    Approve
+                  </b-button>
+                </b-col>
+            </div>
+            </b-row>
             <b-card-text>
               <b-list-group>
                 {% for claim in claims %}
@@ -133,20 +149,6 @@
                 {% endfor %}
               </b-list-group> 
             </b-card-text>
-            <b-row align-h="between">
-              <b-col cols="4">
-                <b-button variant="danger" v-on:click="reject()">
-                  <b-icon icon="exclamation-octagon" class="mx-1"></b-icon>
-                  Reject
-                </b-button>
-              </b-col>
-              <b-col cols="4">
-                <b-button variant="success" class="float-right" v-on:click="approve()">
-                  <b-icon icon="card-checklist" class="mx-1"></b-icon>
-                  Approve
-                </b-button>
-              </b-col>
-            </b-row>
         </b-card-group>
 
         {% endif %}
