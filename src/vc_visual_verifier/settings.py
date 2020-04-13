@@ -36,6 +36,7 @@ DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "False"))
 
 ALLOWED_HOSTS = ["*"]
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 # Application definition
 
@@ -47,7 +48,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "oidc_rp",
-    "vc_visual_verifier"
+    "vc_visual_verifier",
 ]
 
 MIDDLEWARE = [
@@ -66,7 +67,7 @@ AUTHENTICATION_BACKENDS = (
     "oidc_rp.backends.OIDCAuthBackend",
 )
 
-AUTH_USER_MODEL = 'vc_visual_verifier.User'
+AUTH_USER_MODEL = "vc_visual_verifier.User"
 
 ROOT_URLCONF = "vc_visual_verifier.urls"
 
