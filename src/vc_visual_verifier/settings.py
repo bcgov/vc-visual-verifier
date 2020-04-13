@@ -12,6 +12,11 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+
+def parse_bool(val):
+    return val and val != "0" and str(val).lower() != "false"
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -20,10 +25,14 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "@ml^(k%**i84a2#m6em1^)rt-%chwas3z#w0sz=q3w0ng8zm77"
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    # safe value used for development when DJANGO_SECRET_KEY might not be set
+    "@ml^(k%**i84a2#m6em1^)rt-%chwas3z#w0sz=q3w0ng8zm77",
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = parse_bool(os.getenv("DJANGO_DEBUG", "False"))
 
 ALLOWED_HOSTS = ["*"]
 
@@ -38,6 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "oidc_rp",
+    "vc_visual_verifier"
 ]
 
 MIDDLEWARE = [
@@ -128,9 +138,13 @@ STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Settings for django-oidc-rp
 OIDC_RP_PROVIDER_ENDPOINT = os.getenv("OIDC_RP_PROVIDER_ENDPOINT")
-OIDC_RP_PROVIDER_AUTHORIZATION_ENDPOINT = f"{OIDC_RP_PROVIDER_ENDPOINT}/vc/connect/authorize"
+OIDC_RP_PROVIDER_AUTHORIZATION_ENDPOINT = (
+    f"{OIDC_RP_PROVIDER_ENDPOINT}/vc/connect/authorize"
+)
 OIDC_RP_PROVIDER_TOKEN_ENDPOINT = f"{OIDC_RP_PROVIDER_ENDPOINT}/vc/connect/token"
-OIDC_RP_PROVIDER_JWKS_ENDPOINT = f"{OIDC_RP_PROVIDER_ENDPOINT}/.well-known/openid-configuration/jwks"
+OIDC_RP_PROVIDER_JWKS_ENDPOINT = (
+    f"{OIDC_RP_PROVIDER_ENDPOINT}/.well-known/openid-configuration/jwks"
+)
 OIDC_RP_PROVIDER_USERINFO_ENDPOINT = f"{OIDC_RP_PROVIDER_ENDPOINT}/vc/connect/userinfo"
 OIDC_RP_CLIENT_ID = os.getenv("OIDC_RP_CLIENT_ID")
 OIDC_RP_CLIENT_SECRET = os.getenv("OIDC_RP_CLIENT_SECRET")
@@ -142,7 +156,7 @@ OIDC_RP_ID_TOKEN_INCLUDE_USERINFO = True
 VC_AUTHN_PRES_REQ_CONF_ID = os.getenv("VC_AUTHN_PRES_REQ_CONF_ID")
 
 # Claims to be checked in the UI
-OIDC_CLAIMS_REQUIRED = os.getenv("VC_AUTHN_PRES_REQ_CONF_ID")
+OIDC_CLAIMS_REQUIRED = os.getenv("OIDC_CLAIMS_REQUIRED")
 
 # VC verifier name
 VERIFIER_NAME = os.getenv("VERIFIER_NAME", "VC Visual Verifier")

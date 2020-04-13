@@ -58,27 +58,93 @@
         {% else %}
 
         <b-card-group deck>
-          <b-card
-            header="featured"
-            header-tag="header"
-            footer="Card Footer"
-            footer-tag="footer"
-            title="Title"
-          >
-            <b-card-text>Header and footers using props.</b-card-text>
-            <b-button href="#" variant="primary">Go somewhere</b-button>
+          <b-card header-tag="header" footer-tag="footer">
+            <template v-slot:header>
+              <h6 class="mb-0">Holder View</h6>
+            </template>
+            <b-card-title>Credential Check</b-card-title>
+            <b-card-text>
+              <div v-if="checking">
+                <b-row align-h="start">
+                  <b-col align-self="center"><b-spinner variant="info" label="Spinning"></b-spinner></b-col>
+                  <b-col cols="9"><span>Please wait while your credentials are being verified</span></b-col>
+                </b-row>
+              </div>
+              <div v-if="!checking">
+                <div v-if="checkSuccess">
+                  <b-row class="mx-auto">
+                    <b-col cols="4"></b-col>
+                    <b-col align-self="center">
+                      <b-icon icon="unlock" variant="success" style="width: 120px; height: 120px;"></b-icon>
+                    </b-col>
+                    <b-col cols="4"></b-col>
+                  </b-row>
+                  <b-row class="my-2 mx-auto">
+                    <b-col cols="12" align-self="center">
+                      <h3>All, good! You can now proceed.</h3>
+                    </b-col>
+                  </b-row>
+                  <b-row class="my-2 mx-auto">
+                    <b-col cols="4"></b-col>
+                    <b-col align-self="center">         
+                      <b-button href="{% url 'oidc_end_session' %}" variant="primary">Close Session</b-button>
+                    </b-col>
+                    <b-col cols="4"></b-col>
+                  </b-row>
+                </div>
+                <div v-if="!checkSuccess">
+                  <b-row class="mx-auto">
+                    <b-col cols="4"></b-col>
+                    <b-col align-self="center">
+                      <b-icon icon="shield-lock" variant="danger" style="width: 120px; height: 120px;"></b-icon>
+                    </b-col>
+                    <b-col cols="4"></b-col>
+                  </b-row>
+                  <b-row class="my-2 mx-auto">
+                    <b-col cols="12" align-self="center">
+                      <h3>Uh-oh, something is wrong.</h3>
+                    </b-col>
+                  </b-row>
+                </div>
+              </div>              
+            </b-card-text>
           </b-card>
       
-          <b-card title="Title" header-tag="header" footer-tag="footer">
+          <b-card header-tag="header" footer-tag="footer">
             <template v-slot:header>
-              <h6 class="mb-0">Header Slot</h6>
+              <h6 class="mb-0">Verifier View</h6>
             </template>
-            <b-card-text>Header and footers using slots.</b-card-text>
-            <b-button href="#" variant="primary">Go somewhere</b-button>
-            <template v-slot:footer>
-              <em>Footer Slot</em>
-            </template>
-          </b-card>
+            <b-card-title>Provided Claims</b-card-title>
+            <b-card-text>
+              <b-list-group>
+                {% for claim in claims %}
+                <b-list-group-item class="align-middle">
+                  <b-row align-h="start">
+                    {% if claim.provided %}
+                      <b-col cols="4"><b-icon class="h3" icon="check-box" variant="success"></b-icon></b-col>                    
+                    {% else %}
+                    <b-col cols="4"><b-icon class="h3" icon="exclamation-triangle-fill" variant="warning"></b-icon></b-col>
+                    {% endif %}
+                    <b-col cols="4"><span>{{ claim.name }}</span></b-col>
+                  </b-row>
+                </b-list-group-item>
+                {% endfor %}
+              </b-list-group> 
+            </b-card-text>
+            <b-row align-h="between">
+              <b-col cols="4">
+                <b-button variant="danger" v-on:click="reject()">
+                  <b-icon icon="exclamation-octagon" class="mx-1"></b-icon>
+                  Reject
+                </b-button>
+              </b-col>
+              <b-col cols="4">
+                <b-button variant="success" class="float-right" v-on:click="approve()">
+                  <b-icon icon="card-checklist" class="mx-1"></b-icon>
+                  Approve
+                </b-button>
+              </b-col>
+            </b-row>
         </b-card-group>
 
         {% endif %}
@@ -91,9 +157,19 @@
         delimiters: ["[[", "]]"],
         el: "#app",
         data: {
-          message: "Hello Vue!",
+          checking: true,
+          checkSuccess: false
         },
-        methods: {},
+        methods: {
+          approve: function(){
+            this.checking = false;
+            this.checkSuccess = true;
+          },
+          reject: function(){
+            this.checking = false;
+            this.checkSuccess = false;
+          }
+        },
       });
     </script>
   </body>
