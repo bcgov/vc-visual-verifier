@@ -1,0 +1,31 @@
+version: "3"
+services:
+  vc-visual-verifier:
+    restart: always
+    image: vc-visual-verifier
+    environment:
+      DJANGO_DEBUG: ${DJANGO_DEBUG}
+      APP_SCRIPT: ${APP_SCRIPT}
+      STI_SCRIPTS_PATH: ${STI_SCRIPTS_PATH}
+      OIDC_RP_PROVIDER_ENDPOINT: ${OIDC_RP_PROVIDER_ENDPOINT}
+      OIDC_RP_CLIENT_ID: ${OIDC_RP_CLIENT_ID}
+      OIDC_RP_CLIENT_SECRET: ${OIDC_RP_CLIENT_SECRET}
+      OIDC_RP_SCOPES: ${OIDC_RP_SCOPES}
+      VC_AUTHN_PRES_REQ_CONF_ID: ${VC_AUTHN_PRES_REQ_CONF_ID}
+      OIDC_CLAIMS_REQUIRED: ${OIDC_CLAIMS_REQUIRED}
+      VERIFIER_NAME: ${VERIFIER_NAME}
+    volumes:
+      - ../src:/opt/app-root/src
+    ports:
+      - "8000:8000"
+    command: >
+      /bin/bash -c "
+      if [ $DEBUG ] && [ "$DEBUG" == "True" ]; then
+      echo Running in debug mode;
+        python manage.py migrate;
+        python manage.py runserver 0.0.0.0:8000;
+      else
+        echo Running s2i container...;
+        env;
+        ${STI_SCRIPTS_PATH}/run;
+      fi"
