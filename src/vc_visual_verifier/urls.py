@@ -21,5 +21,6 @@ from .views import visual_verifier
 
 urlpatterns = [
     path("", visual_verifier.verifier),
+    path("authorize", visual_verifier.authorize),
     re_path(r"^oidc/", include("oidc_rp.urls")),
 ]

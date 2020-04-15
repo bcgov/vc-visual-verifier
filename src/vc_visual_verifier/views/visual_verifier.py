@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import redirect, render, reverse
 
 
 def verifier(request):
@@ -19,4 +19,11 @@ def verifier(request):
                 claims.append({"name": claim, "provided": False})
     return render(
         request, "visual_verifier.html", {"settings": settings, "claims": claims}
+    )
+
+
+def authorize(request):
+    return redirect(
+        reverse("oidc_auth_request")
+        + f"?pres_req_conf_id={settings.VC_AUTHN_PRES_REQ_CONF_ID}"
     )
