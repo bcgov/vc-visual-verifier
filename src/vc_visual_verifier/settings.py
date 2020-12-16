@@ -138,6 +138,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+STATICFILES_DIRS = [
+    BASE_DIR + "/static",
+]
+
 
 # Settings for django-oidc-rp
 OIDC_RP_PROVIDER_ENDPOINT = os.getenv("OIDC_RP_PROVIDER_ENDPOINT")
