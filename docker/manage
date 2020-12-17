@@ -214,13 +214,12 @@ configureEnvironment() {
 
   export STI_SCRIPTS_PATH=${STI_SCRIPTS_PATH:-/usr/libexec/s2i}
   
-  export DEBUG=True
+  export DEBUG=${DEBUG:-True}
 
   # vc-visual-verifier
   export APP_SCRIPT="run-prod.sh"
   export DJANGO_DEBUG=${DEBUG}
   export DJANGO_SECRET_KEY="@ml^(k%**i84a2#m6em1^)rt-%chwas3z#w0sz=q3w0ng8zm77"
-  export DJANGO_DEBUG=True
   export OIDC_RP_PROVIDER_ENDPOINT="${CONTROLLER_URL:-http://DOCKERHOST:5000}"
   export OIDC_RP_CLIENT_ID="vc-verifier"
   export OIDC_RP_CLIENT_SECRET="vc-verifier"
@@ -340,6 +339,9 @@ case "${COMMAND}" in
     configureEnvironment "$@"
     docker-compose up -d ${_startupParams}
     docker-compose logs -f
+    ;;
+  start-prod)
+    DEBUG=False ./manage start
     ;;
   restart)
     _startupParams=$(getStartupParams $@)
