@@ -53,6 +53,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -134,13 +135,14 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+if DEBUG:
+    # serve static files from development server
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+else:
+    # serve static files using production webserver
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-
-STATICFILES_DIRS = [
-    BASE_DIR + "/static",
-]
 
 
 # Settings for django-oidc-rp
