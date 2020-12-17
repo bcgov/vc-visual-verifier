@@ -28,7 +28,7 @@
     <!-- Load Vue followed by BootstrapVue -->
     <script src="//unpkg.com/vue@latest/dist/vue.min.js"></script>
     <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue.min.js"></script>
-
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <!-- Load the following for BootstrapVueIcons support -->
     <script src="//unpkg.com/bootstrap-vue@latest/dist/bootstrap-vue-icons.min.js"></script>
 
@@ -46,10 +46,10 @@
       <b-container fluid="md" class="py-3">
 
         {% if user.is_anonymous %}
-        
+        {% load static %}
         <b-card>
-          <b-card-title>Authentication Required</b-card-title>
-          <b-card-text>Please authenticate by providing your Verifiable Credentials.</b-card-text>
+          
+          <div v-html="html"></div>
           {% url 'oidc_auth_request' as login_url %}
               <b-button href="{{ login_url }}?pres_req_conf_id={{ settings.VC_AUTHN_PRES_REQ_CONF_ID }}" variant="primary">Proceed</b-button>
         </b-card>
@@ -158,12 +158,19 @@
     </div>
 
     <script type="text/javascript">
+      
       var app = new Vue({
         delimiters: ["[[", "]]"],
         el: "#app",
         data: {
           checking: true,
-          checkSuccess: false
+          checkSuccess: false,
+          html:""
+        },
+        mounted(){
+          axios.get("/static/custom_home.html").then(resp=>{
+            this.html = resp.data;
+          })
         },
         methods: {
           approve: function(){
