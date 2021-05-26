@@ -47,110 +47,117 @@
 
         {% if user.is_anonymous %}
         {% load static %}
-        <b-card>
-          
-          <div v-html="html"></div>
-          {% url 'oidc_auth_request' as login_url %}
-              <b-button href="{{ login_url }}?pres_req_conf_id={{ settings.VC_AUTHN_PRES_REQ_CONF_ID }}" variant="primary">Proceed</b-button>
-        </b-card>
-        </div>
+        <b-row>
+          <b-col>
+            <b-card>              
+              <div v-html="html"></div>
+              {% url 'oidc_auth_request' as login_url %}
+                  <b-button href="{{ login_url }}?pres_req_conf_id={{ settings.VC_AUTHN_PRES_REQ_CONF_ID }}" variant="primary">Proceed</b-button>
+            </b-card>
+          </b-col>
+        </b-row>
 
         {% else %}
 
-        <b-card-group deck>
-          <b-card header-tag="header" footer-tag="footer">
-            <template v-slot:header>
-              <h6 class="mb-0">Holder View</h6>
-            </template>
-            <b-card-title>Credential Check</b-card-title>
-            <b-card-text>
-              <div v-if="checking">
-                <b-row align-h="start">
-                  <b-col align-self="center"><b-spinner variant="info" label="Spinning"></b-spinner></b-col>
-                  <b-col cols="9"><span>Please wait while your credentials are being verified</span></b-col>
+        <b-row>
+          <b-col>
+            <b-card-group deck>
+              <b-card header-tag="header" footer-tag="footer">
+                <template v-slot:header>
+                  <h6 class="mb-0">Holder View</h6>
+                </template>
+                <b-card-title>Credential Check</b-card-title>
+                <b-card-text>
+                  <div v-if="checking">
+                    <b-row align-h="start">
+                      <b-col align-self="center"><b-spinner variant="info"></b-spinner></b-col>
+                      <b-col cols="9"><span>Please wait while your credentials are being verified</span></b-col>
+                    </b-row>
+                  </div>
+                  <div v-if="!checking">
+                    <div v-if="checkSuccess">
+                      <b-row class="mx-auto">
+                        <b-col cols="4"></b-col>
+                        <b-col align-self="center">
+                          <b-icon icon="unlock" variant="success" shift-h="2" style="width: 120px; height: 120px;"></b-icon>
+                        </b-col>
+                        <b-col cols="4"></b-col>
+                      </b-row>
+                      <b-row class="my-2 mx-auto text-center">
+                        <b-col cols="12" align-self="center">
+                          <h3>All, good! You can now proceed.</h3>
+                        </b-col>
+                      </b-row>
+                    </div>
+                    <div v-if="!checkSuccess">
+                      <b-row class="mx-auto">
+                        <b-col cols="4"></b-col>
+                        <b-col align-self="center">
+                          <b-icon icon="shield-lock" variant="danger" style="width: 120px; height: 120px;"></b-icon>
+                        </b-col>
+                        <b-col cols="4"></b-col>
+                      </b-row>
+                      <b-row class="my-2 mx-auto text-center">
+                        <b-col cols="12" align-self="center">
+                          <h3>Uh-oh, something is wrong.</h3>
+                        </b-col>
+                      </b-row>
+                    </div>
+                    <div v-if="!checking">
+                      <b-row class="my-2 mx-auto">
+                        <b-col cols="4"></b-col>
+                        <b-col align-self="center">         
+                          <b-button href="{% url 'oidc_end_session' %}" variant="primary">Close Session</b-button>
+                        </b-col>
+                        <b-col cols="4"></b-col>
+                      </b-row>
+                    </div>
+                  </div>              
+                </b-card-text>
+              </b-card>
+            </b-col>
+            <b-col>
+              <b-card header-tag="header" footer-tag="footer">
+                <template v-slot:header>
+                  <h6 class="mb-0">Verifier View</h6>
+                </template>
+                <b-card-title>Provided Claims</b-card-title>
+                <div class="sticky-top">
+                  <b-row align-h="between" class="mb-4">
+                    <b-col cols="4">
+                      <b-button variant="danger" v-on:click="reject()">
+                        <b-icon icon="exclamation-octagon" class="mx-1"></b-icon>
+                        Reject
+                      </b-button>
+                    </b-col>
+                    <b-col cols="4">
+                      <b-button variant="success" class="float-right" v-on:click="approve()">
+                        <b-icon icon="card-checklist" class="mx-1"></b-icon>
+                        Approve
+                      </b-button>
+                    </b-col>
+                </div>
                 </b-row>
-              </div>
-              <div v-if="!checking">
-                <div v-if="checkSuccess">
-                  <b-row class="mx-auto">
-                    <b-col cols="4"></b-col>
-                    <b-col align-self="center">
-                      <b-icon icon="unlock" variant="success" shift-h="2" style="width: 120px; height: 120px;"></b-icon>
-                    </b-col>
-                    <b-col cols="4"></b-col>
-                  </b-row>
-                  <b-row class="my-2 mx-auto text-center">
-                    <b-col cols="12" align-self="center">
-                      <h3>All, good! You can now proceed.</h3>
-                    </b-col>
-                  </b-row>
-                </div>
-                <div v-if="!checkSuccess">
-                  <b-row class="mx-auto">
-                    <b-col cols="4"></b-col>
-                    <b-col align-self="center">
-                      <b-icon icon="shield-lock" variant="danger" style="width: 120px; height: 120px;"></b-icon>
-                    </b-col>
-                    <b-col cols="4"></b-col>
-                  </b-row>
-                  <b-row class="my-2 mx-auto text-center">
-                    <b-col cols="12" align-self="center">
-                      <h3>Uh-oh, something is wrong.</h3>
-                    </b-col>
-                  </b-row>
-                </div>
-                <div v-if="!checking">
-                  <b-row class="my-2 mx-auto">
-                    <b-col cols="4"></b-col>
-                    <b-col align-self="center">         
-                      <b-button href="{% url 'oidc_end_session' %}" variant="primary">Close Session</b-button>
-                    </b-col>
-                    <b-col cols="4"></b-col>
-                  </b-row>
-                </div>
-              </div>              
-            </b-card-text>
-          </b-card>
-      
-          <b-card header-tag="header" footer-tag="footer">
-            <template v-slot:header>
-              <h6 class="mb-0">Verifier View</h6>
-            </template>
-            <b-card-title>Provided Claims</b-card-title>
-            <div class="sticky-top">
-              <b-row align-h="between" class="mb-4">
-                <b-col cols="4">
-                  <b-button variant="danger" v-on:click="reject()">
-                    <b-icon icon="exclamation-octagon" class="mx-1"></b-icon>
-                    Reject
-                  </b-button>
-                </b-col>
-                <b-col cols="4">
-                  <b-button variant="success" class="float-right" v-on:click="approve()">
-                    <b-icon icon="card-checklist" class="mx-1"></b-icon>
-                    Approve
-                  </b-button>
-                </b-col>
-            </div>
-            </b-row>
-            <b-card-text>
-              <b-list-group>
-                {% for claim in claims %}
-                <b-list-group-item class="align-middle">
-                  <b-row align-h="start">
-                    {% if claim.provided %}
-                    <b-col cols="4"><b-icon class="h3" icon="check2-square" variant="success"></b-icon></b-col>
-                    {% else %}
-                    <b-col cols="4"><b-icon class="h3" icon="exclamation-triangle-fill" variant="warning"></b-icon></b-col>
-                    {% endif %}
-                    <b-col cols="4"><span>{{ claim.value }}</span></b-col>
-                    <b-col cols="4"><span>({{ claim.name }})</span></b-col>
-                  </b-row>
-                </b-list-group-item>
-                {% endfor %}
-              </b-list-group> 
-            </b-card-text>
-        </b-card-group>
+                <b-card-text>
+                  <b-list-group>
+                    {% for claim in claims %}
+                    <b-list-group-item class="align-middle">
+                      <b-row align-h="start">
+                        {% if claim.provided %}
+                        <b-col cols="4"><b-icon class="h3" icon="check2-square" variant="success"></b-icon></b-col>
+                        {% else %}
+                        <b-col cols="4"><b-icon class="h3" icon="exclamation-triangle-fill" variant="warning"></b-icon></b-col>
+                        {% endif %}
+                        <b-col cols="4"><span>{{ claim.value }}</span></b-col>
+                        <b-col cols="4"><span>({{ claim.name }})</span></b-col>
+                      </b-row>
+                    </b-list-group-item>
+                    {% endfor %}
+                  </b-list-group> 
+                </b-card-text>
+            </b-card-group>
+          </b-col>
+        </b-row>
 
         {% endif %}
       </b-container>
