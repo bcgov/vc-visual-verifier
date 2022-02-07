@@ -1,4 +1,4 @@
-Django>=3.0.3
+Django>=3.0.3,<4.0
 jsonfield>=2.0
 pyjwkest>=1.4
 requests>=2.0
