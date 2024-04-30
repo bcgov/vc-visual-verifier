@@ -5,5 +5,5 @@ requests>=2.0
 django-oidc-rp>=0.3.4
 
 # Web server
-gunicorn>=19.9.0,<20
+gunicorn>=19.9.0,<23
 whitenoise>=4.1.2,<4.2
